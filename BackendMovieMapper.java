@@ -8,6 +8,7 @@
 // Notes to Grader: <optional extra >
 
 
+import java.io.File;
 import java.io.FileNotFoundException;
 // import java.io.FileReader;
 import java.io.IOException;
@@ -53,11 +54,13 @@ public class BackendMovieMapper implements BackendInterface {
 	public BackendMovieMapper(String[] args) {
 		if(args.length > 0) {
 			
-			Scanner fileReader;
+			Scanner fileReader = null;
 			MovieScanner movieReader; // change to whatever corresponds to Data Wrangler's class -- MovieDataReader?
+			File file;
 			
 			try {
-				fileReader = new Scanner(args[0]);
+				file =  new File(args[0]);
+				fileReader = new Scanner(file);
 				movieReader = new MovieScanner();	// change to whatever corresponds to Data Wrangler's class -- MovieDataReader?
 					
 				this.movies = movieReader.readDataSet(fileReader);	// method implemented by data wrangler
@@ -70,7 +73,10 @@ public class BackendMovieMapper implements BackendInterface {
 			} catch (IOException e) {
 				System.out.println("The file cannot be opened for reading or there is an error reading the file.");
 			} catch (DataFormatException e) {
-				System.out.println("The file does not have the correct format.");
+				e.printStackTrace();
+				//System.out.println("The file does not have the correct format.");
+			} finally {
+				fileReader.close();
 			}
 		}
 	}
@@ -193,6 +199,8 @@ public class BackendMovieMapper implements BackendInterface {
 		
 		List<MovieInterface> result = new ArrayList<MovieInterface>();
 		if(getGenres().size() == 0) {
+			//System.out.println("Genres list is empty");
+
 			return result;
 		}
 		

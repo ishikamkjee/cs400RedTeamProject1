@@ -1,29 +1,29 @@
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class Frontend {
 
-  private static Scanner scanner = new Scanner(System.in);
-  private String[] filePath;
+  public Scanner scanner = new Scanner(System.in);
   private BackendMovieMapper backend;
 
   public static void main(String[] args) {
     Frontend frontend = new Frontend();
 
     // The main method takes a file path to a CSV file.
-    frontend.filePath = args;
-    frontend.run();
+    
+    //FOR TESTING
+    //args = new String[] {"movies.csv"};
+    //FOR TESTING
+    
+    frontend.backend = new BackendMovieMapper(args);
+    frontend.run(frontend.backend);
     System.out
         .println("Thank you for using the CS 400 Movie Mapper Project! May the force be with you!");
   }
 
-  public void run() {
-    String[] args = new String[] {"movies.csv"};
-    backend = new BackendMovieMapper(args);
+  public void run(BackendMovieMapper backend) {
+    this.backend = backend;
     // adding all ratings to the back end
     // When the system starts, all ratings will be selected.
     addAllRatings();
@@ -42,7 +42,8 @@ public class Frontend {
         + "-------------------  Current Mode: Base  ---------------------\n"
         + "==============================================================\n"
         + "Press 'r' to enter ratings mode, 'g' to enter genres mode, and\n"
-        + "to exit the program. Enter a number to scroll through the list\n"
+        + "'x' to exit the program. Enter a number to scroll through the\n"
+        + "list of movies.\n"
         + "==============================================================\n");
 
     // list of the top 3 (by average rating) selected movies This list may be empty or contain less
@@ -94,7 +95,7 @@ public class Frontend {
         + "==============================================================\n"
         + "To select or de-select a genre, type the number corresponding\nto the genre and press "
         + "Enter. You can select multiple genres \nat once. To return to the base mode, type 'x'"
-        + " into the command \nprompt.\n"
+        + " into the command \nprompt and you will see the list of movies.\n"
         + "==============================================================\n");
 
     // The genre selection mode will display a brief introduction for users of how to select or
@@ -105,8 +106,8 @@ public class Frontend {
 
     while (true) {
       // displays all the genres and assigns a number
-      List selectedGenres = new ArrayList();
-      List allGenres = new ArrayList();
+      List<String> selectedGenres = new ArrayList<String>();
+      List<String> allGenres = new ArrayList<String>();
       selectedGenres = backend.getGenres();
       allGenres = backend.getAllGenres();
       int counter = 1;
@@ -163,6 +164,11 @@ public class Frontend {
   public void ratingsMode() {
     System.out.println("==============================================================\n"
         + "--------------  Current Mode: Ratings Select  ----------------\n"
+        + "==============================================================\n"
+        + "To select or de-select a rating, type the number corresponding\n"
+        + "to the rating and press Enter. You can select multiple ratings\n"
+        + "at once. To return to the base mode, type 'x' into the command\n"
+        + "prompt and you will see the list of movies.\n"
         + "==============================================================\n");
     while (true) {
       System.out.println("0    0-0.99\n" + "1    1-1.99\n" + "2    2-2.99\n" + "3    3-3.99\n"
@@ -171,13 +177,15 @@ public class Frontend {
       String input;
 
       // Ratings are clearly marked as either selected or unselected in the list.
-      List selectedRatings = new ArrayList();
+      List<String> selectedRatings = new ArrayList<String>();
       selectedRatings = backend.getAvgRatings();
       System.out.println("\nYour selected ratings:");
       for (int i = 0; i < selectedRatings.size(); i++) {
-        System.out.println("     " + selectedRatings.get(i));
+        System.out.print(selectedRatings.get(i) + "  ");
       }
-
+      System.out.println("\n==============================================================\n"
+          + "To return to the base mode, type 'x' into the command prompt.\n"
+          + "==============================================================\n");
       System.out.println("Please enter a valid command:");
       // check if input is an integer
       if (scanner.hasNextInt()) {

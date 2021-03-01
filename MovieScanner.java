@@ -20,17 +20,35 @@ public class MovieScanner implements MovieDataReaderInterface {
   public List<MovieInterface> readDataSet(Scanner scanner)
       throws IOException, DataFormatException {
     List<String[]> movies = new ArrayList<>();
+    
+    scanner.nextLine();
     while (scanner.hasNextLine()) {
         String[] line = scanner.nextLine().split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
+        
+        for (int i = 0; i < line.length; i++) {
+        	if (line[i] == null || line[i].isEmpty()) {
+        		line[i] = "null";
+        	}
+        }
+        
         movies.add(line);
+
     }
-    HashTableMap allMovies = new HashTableMap();
+    
+    for (int i = 0; i < movies.get(5).length; i++) {
+    	System.out.println(movies.get(5)[i]);
+    }
+    System.out.println(movies.size());
+   // HashTableMap allMovies = new HashTableMap();
     List<MovieInterface> totalMovies = new ArrayList<MovieInterface>();
     if (movies.get(0).length != 13) {
+    	
       throw new DataFormatException();
     }
     for (int i = 0; i < movies.size(); i++) {
       String title = movies.get(i)[0];
+      //System.out.println(movies.get(i)[2]);
+      System.out.println(i);
       Integer year = Integer.parseInt(movies.get(i)[2]);
       String[] genresList = movies.get(i)[3].split(",");
       List<String> genres = Arrays.asList(genresList);
@@ -41,17 +59,7 @@ public class MovieScanner implements MovieDataReaderInterface {
       totalMovies.add(newMovie);
     }
     Collections.sort(totalMovies);
-    List<List<MovieInterface>> movieRatings = new ArrayList<List<MovieInterface>>();
-    for (int i = 0; i < 101; i++) {
-      movieRatings.add(i, Collections.<MovieInterface>emptyList());
-    }
-    for (int i = 0; i < totalMovies.size(); i++) {
-      int index = (int) (totalMovies.get(i).getAvgVote() * 10);
-      movieRatings.get(index).add(totalMovies.get(i));
-    }
-    for (int i = 0; i < movieRatings.size(); i++) {
-      allMovies.put(i / 10, movieRatings.get(i));
-    }
+
     return totalMovies;
   }
 }
